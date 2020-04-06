@@ -3,8 +3,11 @@
 ## References:
 
 > https://docs.microsoft.com/en-us/azure/virtual-machines/windows/shared-image-galleries
+
 > https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery
+
 > https://github.com/danielsollondon/azvmimagebuilder/blob/master/solutions/1_Azure_DevOps/DocsReadme.md
+
 > https://github.com/pauldotyu/RDS-Templates
 
 **To achieve automation of common WVD management tasks the following components will be used:**
