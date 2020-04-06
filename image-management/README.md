@@ -120,7 +120,7 @@ The idea is that this script will be committed to a git repo and used to customi
 - [Video: Git version control in VS Code](https://code.visualstudio.com/docs/introvideos/versioncontrol)
 - A very basic install script can be found [here](files/base-installs.ps1)
 
-## Build DevOps Pipeline
+## Azure DevOps Pipeline
 
 If you have a lengthy build script, you will need to either purchase additional capacity or self-host a build agent. Microsoft hosted agents will timeout after 60 minutes for private repos. Here is a link to help you get started with Self-Hosted Agents
 
@@ -235,6 +235,8 @@ az resource show -g <YOUR_RESOURCE_GROUP_NAME> -n t_1585957915914 --resource-typ
 The job will eventually finish (mostly likely more than an hour later depending on build script, windows update, and replication regions) and you can setup email alerts to trigger upon failure or success.
 
 Once it is finished you can view the latest version in your Shared Image Gallery.
+
+## Azure DevOps Releases
 
 Now, that your image is updated, you are ready to update your host pool. You can use the following tempaltes which have been modified to deploy from Shared Image Galleries:
 
