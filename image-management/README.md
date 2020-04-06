@@ -1,15 +1,5 @@
 # Image Management using Azure Image Builder, Shared Image Gallery, Azure DevOps
 
-## References:
-
-> https://docs.microsoft.com/en-us/azure/virtual-machines/windows/shared-image-galleries
-
-> https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery
-
-> https://github.com/danielsollondon/azvmimagebuilder/blob/master/solutions/1_Azure_DevOps/DocsReadme.md
-
-> https://github.com/pauldotyu/RDS-Templates
-
 **To achieve automation of common WVD management tasks the following components will be used:**
 
 - Azure DevOps (Repos, Pipelines, AIB Image Builder Task)
@@ -255,3 +245,10 @@ Now, that your image is updated, you are ready to update your host pool. You can
 Using the templates above, you can build a release pipeline that triggers off of a build completion and use the Azure Deployment task to update your host pool or create new ones. You can also add stages to the pipeline so that a Stage tenant is automatically deployed for testing while production awaits for approval to proceed.
 
 ![release-pipeline](img/release-pipeline.png)
+
+## References:
+
+- https://docs.microsoft.com/en-us/azure/virtual-machines/windows/shared-image-galleries
+- https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery
+- https://github.com/danielsollondon/azvmimagebuilder/blob/master/solutions/1_Azure_DevOps/DocsReadme.md
+- https://github.com/pauldotyu/RDS-Templates
