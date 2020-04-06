@@ -29,26 +29,26 @@
 
 Execute the following command to enable the preview feature
 
-```ps
+```powershell
 Register-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages -FeatureName VirtualMachineTemplatePreview
 ```
 
 Check the status of the feature
 
-```ps
+```powershell
 Get-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages -FeatureName VirtualMachineTemplatePreview
 ```
 
 While you're at it, make sure the following resource providers are also registered:
 
-```ps
+```powershell
 Get-AzResourceProvider -ProviderNamespace Microsoft.VirtualMachineImages | Select-Object Locations,  RegistrationState
 Get-AzResourceProvider -ProviderNamespace Microsoft.Storage | Select-Object Locations, RegistrationState
 ```
 
 If the resource providers listed above are not enabled, make sure these are enabled too
 
-```ps
+```powershell
 Register-AzResourceProvider -ProviderNamespace Microsoft.VirtualMachineImages
 Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
 ```
@@ -57,7 +57,7 @@ When you registered the VirtualMachineTemplatePreview feature, it added the AIB 
 
 > The ApplicationId for AIB is static
 
-```
+```powershell
 $ResourceGroup = "<YOUR-RESOURCE-GROUP-NAME>"
 $Location = "<LOCATION>"
 New-AzResourceGroup -Name $ResourceGroup -Location $Location
@@ -78,7 +78,7 @@ The steps below are also documented [here](https://docs.microsoft.com/en-us/azur
 
 Create image gallery
 
-```ps
+```powershell
 $gallery = New-AzGallery `
   -GalleryName "<YOUR_GALLERY_NAME> `
   -ResourceGroupName $ResourceGroup.ResourceGroupName `
@@ -88,7 +88,7 @@ $gallery = New-AzGallery `
 
 Create image definition
 
-```ps
+```powershell
 $galleryImage = New-AzGalleryImageDefinition `
   -GalleryName $gallery.Name `
   -ResourceGroupName $ResourceGroup.ResourceGroupName `
@@ -222,7 +222,7 @@ Take the task id and query for the build status
 
 **PowerShell:**
 
-```ps
+```powershell
 (Get-AzResource -ResourceGroupName <YOUR_RESOURCE_GROUP_NAME> -ResourceType Microsoft.VirtualMachineImages/imageTemplates -Name t_1585957915914).Properties.lastRunStatus
   ```
 
