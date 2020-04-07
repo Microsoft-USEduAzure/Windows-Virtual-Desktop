@@ -221,7 +221,7 @@ stages:
         vmSize: 'Standard_DS4_v2'
 ```
 
-If you are running this for the first time, you will need to grant the pipeline job permissions to use your Azure Subscription connection and self-hosted build agent
+If you are running this for the first time, you will need to grant the pipeline job permissions to use your Azure Subscription connection and self-hosted build agent. Click the **Permit** button for both.
 
 ![job-permissions](img/pipeline-permissions.png)
 
