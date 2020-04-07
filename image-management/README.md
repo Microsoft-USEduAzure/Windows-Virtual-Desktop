@@ -171,7 +171,7 @@ Click the task and fill in the following properties:
 - Location: select a AIB [supported regions](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-overview#regions)
 - Source
   - Image type: Marketplace
-  - Base image: Windows 19h1-Evd
+  - Base image: Windows 19h1-Evd (**NOTE:** The drop down does not include the image I need but we can specify the exact SKU by overwritting the YAML)
   - Base Image version: latest
 - Customize
   - Provisioner: PowerShell
@@ -220,6 +220,10 @@ stages:
         ibLocation: '<YOUR_AIB_LOCATOIN>'
         vmSize: 'Standard_DS4_v2'
 ```
+
+If you are running this for the first time, you will need to grant the pipeline job permissions to use your Azure Subscription connection and self-hosted build agent
+
+![job-permissions](img/pipeline-permissions.png)
 
 Once you submit the job, Azure DevOps will take AIB input parameters and submit a deployment template then run. The template name will be returned as part of the running logs and you can use the following CLI or PowerShell query to check the status. The template Id will start with **t_**
 
