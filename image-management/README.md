@@ -154,7 +154,23 @@ Select starter pipeline
 
 ![starter-pipeline](img/starter-pipeline.png)
 
-In the starter pipeline, locate the the steps node, delete the two sample scripts, place your cursor directly under steps, then click the **Show assistant** button
+In the starter pipeline, delete the sample yaml, replace with the following code then place your cursor directly under ``steps:``, then click the **Show assistant** button
+
+```yaml
+trigger: 
+  master
+
+stages:
+- stage: wvd_image
+  jobs:
+  - job: build_image
+    timeoutInMinutes: 0
+
+    pool:
+      name: 'Default'
+
+    steps:
+ ```
 
 ![show-assistant](img/show-assistant.png)
 
