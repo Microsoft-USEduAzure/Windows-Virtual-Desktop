@@ -1,6 +1,6 @@
 # Image Management using Azure Image Builder, Shared Image Gallery, Azure DevOps
 
-## References:
+**References:**
 
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/shared-image-galleries
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery
