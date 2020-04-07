@@ -249,7 +249,7 @@ Once it is finished you can view the latest version in your Shared Image Gallery
 
 ## Azure DevOps Releases
 
-Now, that your image is updated, you are ready to update your host pool. You can use the following tempaltes which have been modified to deploy from Shared Image Galleries:
+Now, that your image is updated, you are ready to update your host pool. You can use the following templates which have been modified to deploy from Shared Image Galleries:
 
 - [Create host pool using image from SIG](https://raw.githubusercontent.com/pauldotyu/RDS-Templates/master/wvd-templates/Create%20and%20provision%20WVD%20host%20pool/mainTemplate.json)
 
@@ -258,3 +258,13 @@ Now, that your image is updated, you are ready to update your host pool. You can
 Using the templates above, you can build a release pipeline that triggers off of a build completion and use the Azure Deployment task to update your host pool or create new ones. You can also add stages to the pipeline so that a Stage tenant is automatically deployed for testing while production awaits for approval to proceed.
 
 ![release-pipeline](img/release-pipeline.png)
+
+You should source control the hostpool templates and chain pipeline builds together to automate the workflow.
+
+As an example:
+
+1. The image build pipeline completes and triggers a hostpool pipeline
+1. The hostpool pipeline will take my ARM template JSON files and publish as build artifacts
+  1. As part of the hostpool pipeline options, I can format the build number to be ``$(DayOfYear)$(Rev:r)`` so that my build numbers are short and unique. This will be used in a later pipeline
+1. The hostpool pipeline completes and triggers the **Update existing host pool** to push my new image to an existing hostpool by submitting the ARM template and updating its parameter using Azure DevOps Pipeline Variables. 
+  1. Using variables we can update the host pool VM name prefix to our build number so we'll easily be able to identify the day of the year that the image was built.
