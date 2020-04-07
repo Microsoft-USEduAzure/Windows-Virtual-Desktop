@@ -187,7 +187,7 @@ Click the task and fill in the following properties:
 - Location: select a AIB [supported regions](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-overview#regions)
 - Source
   - Image type: Marketplace
-  - Base image: Windows 19h1-Evd (**NOTE:** The drop down does not include the image I need but we can specify the exact SKU by overwritting the YAML)
+  - Base image: Windows 19h1-Evd **(NOTE: The drop down does not include the image I'm looking for but can specify the exact SKU by overwritting the YAML)**
   - Base Image version: latest
 - Customize
   - Provisioner: PowerShell
