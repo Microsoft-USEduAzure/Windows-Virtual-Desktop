@@ -265,6 +265,6 @@ As an example:
 
 1. The image build pipeline completes and triggers a hostpool pipeline
 1. The hostpool pipeline will take my ARM template JSON files and publish as build artifacts
-  1. As part of the hostpool pipeline options, I can format the build number to be ``$(DayOfYear)$(Rev:r)`` so that my build numbers are short and unique. This will be used in a later pipeline
+  - As part of the hostpool pipeline options, I can format the build number to be ``$(DayOfYear)$(Rev:r)`` so that my build numbers are short and unique. In the screen shot above, my build number is **0942** which represents the 94th day of the year and the second build of the day. This will be used in a later pipeline.
 1. The hostpool pipeline completes and triggers the **Update existing host pool** to push my new image to an existing hostpool by submitting the ARM template and updating its parameter using Azure DevOps Pipeline Variables. 
-  1. Using variables we can update the host pool VM name prefix to our build number so we'll easily be able to identify the day of the year that the image was built.
+  - Using variables we can update the host pool VM name prefix to our build number so we'll easily be able to identify the day of the year that the image was built.
