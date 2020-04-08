@@ -65,9 +65,9 @@ When you registered the VirtualMachineTemplatePreview feature, it added the AIB 
 > The ApplicationId for AIB is static
 
 ```powershell
-$ResourceGroup = "<YOUR-RESOURCE-GROUP-NAME>"
+$ResourceGroupName = "<YOUR-RESOURCE-GROUP-NAME>"
 $Location = "<LOCATION>"
-New-AzResourceGroup -Name $ResourceGroup -Location $Location
+$ResourceGroup = New-AzResourceGroup -Name $ResourceGroupName -Location $Location
 New-AzRoleAssignment -RoleDefinitionName "Contributor" -ApplicationId "cf32a0cc-373c-47c9-9156-0db11f6a6dfc" -ResourceGroupName $ResourceGroup
 ```
 
