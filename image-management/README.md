@@ -87,7 +87,7 @@ Create image gallery
 
 ```powershell
 $gallery = New-AzGallery `
-  -GalleryName "<YOUR_GALLERY_NAME> `
+  -GalleryName <YOUR_GALLERY_NAME> `
   -ResourceGroupName $ResourceGroup.ResourceGroupName `
   -Location $resourceGroup.Location `
   -Description "<YOUR_GALLERY_DESCRIPTION>"
