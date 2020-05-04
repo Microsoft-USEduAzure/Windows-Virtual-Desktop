@@ -73,9 +73,9 @@ New-AzRoleAssignment -RoleDefinitionName "Contributor" -ApplicationId "cf32a0cc-
 
 ## Create an Azure Storage account
 
-> Create a storage account in the same resource group that AIB will be working out of
+> Use this [guide](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) (if needed) to create the storage account.
 
-Use this [guide](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) (if needed) to create the storage account
+Azure Image Builder will use this storage account to temporarily store files for the deployment template.
 
 ## Create a Shared Image Gallery and Image Definition
 
@@ -110,14 +110,17 @@ $galleryImage = New-AzGalleryImageDefinition `
 
 ## Prepare your image build script
 
-This is your image so you will need to know what applications are to be installed, how to silently install them and which registry settings you'd like to implement to make for a good user experience in addition to maintaining security posture.
+This is where you customize your image. You should know what applications are to be installed, how to silently install them, and which registry settings you'd like to implement to make for a good user experience in addition to maintaining security posture.
 
 Some good examples to start:
 
 - https://github.com/markhooks81/Winter-Ready-2020/blob/master/WVDGoldImageAIB.ps1
 - https://github.com/whitscripts/rds/blob/master/WVD_MasterImage_Prep_Script-public.ps1
 
-The idea is that this script will be committed to a git repo and used to customize base  images preferrably pulled from the marketplace to ensure we're always using the latest version. The Azure DevOps Image Builder task also includes the ability to perform Windows updates as part of the image building process.
+
+The idea is that this script will be committed to a git repo and used to customize base  images. Pulling base images from the marketplace will ensure you're always using the latest version. 
+
+The Azure DevOps Image Builder task also includes the ability to perform Windows updates as part of the image building process.
 
 ## OPTIONAL: Get started with Azure DevOps
 
@@ -127,13 +130,38 @@ The idea is that this script will be committed to a git repo and used to customi
 - [Video: Git version control in VS Code](https://code.visualstudio.com/docs/introvideos/versioncontrol)
 - A very basic install script can be found [here](files/base-installs.ps1)
 
-## Azure DevOps Pipeline
+## Azure Repos
 
-If you have a lengthy build script, you will need to either purchase additional capacity or self-host a build agent. Microsoft hosted agents will timeout after 60 minutes for private repos. Here is a link to help you get started with Self-Hosted Agents
+In Azure Repos, create a new Git repository. Here is a sample on how a repo directory can be structured.
+
+```text
+.
+├── azure-pipelines.yml
+└── wvd
+    ├── host-pools
+    │   └── templates
+    │       ├── createParameters.json
+    │       ├── createTemplate.json
+    │       ├── updateParameters.json
+    │       └── updateTemplate.json
+    └── images
+        └── scripts
+            └── base-installs.ps1
+```
+
+The ``images/scripts`` directory will be where we place the customization scripts. 
+
+The ``host-pools/templates`` directory will be where we place templates for deploying WVD host pools.
+
+## Azure Pipelines
+
+For private projects, you are allotted one free parallel job that can run for up to 60 minutes. Azure Pipeline AIB builds will typically take longer than 60 minutes to complete. Therefore, you will need to either purchase additional capacity or self-host a build agent. More on that [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/licensing/concurrent-jobs?view=azure-devops)
+
+This link to help you get started with Self-Hosted Agents
 
 - [Install self-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser#install)
 
-Be sure that your DevOps project has a service connection to your Azure subscription
+Be sure that your Azure DevOps project has a service connection configured to be able to deploy resources into your Azure subscription
 
 - [Create an Azure Resource Manager service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops#create-an-azure-resource-manager-service-connection-using-automated-security)
 
@@ -142,6 +170,7 @@ Add the Azure VM Image Builder DevOps Task to your organization
 - [Azure VM Image Builder DevOps Task](https://marketplace.visualstudio.com/items?itemName=AzureImageBuilder.devOps-task-for-azure-image-builder)
 
 In Azure DevOps, navigate to **Pipeline** and click **New pipeline**
+
 > We'll use the new YAML schema. This can also be done using the classic editor but used YAML so that we can use the Windows 10 Multi-session with Office 365 ProPlus image from the gallery as our base
 
 Select your Git repo
@@ -180,31 +209,31 @@ In the search box, type "image builder" you should see the task appear
 
 ![image-builder](img/add-img-builder.png)
 
-Click the task and fill in the following properties:
+Click the ``Azure VM Image Builder Test(Preview)`` task and fill in the following properties:
 
-- Azure Subscription: select the subscription where you enabled the AIB feature
-- Resource group: select your resource group where you added contributor access for AIB
-- Location: select a AIB [supported regions](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-overview#regions)
-- Source
-  - Image type: Marketplace
-  - Base image: Windows 19h1-Evd **(NOTE: The drop down does not include the image I'm looking for but can specify the exact SKU by overwritting the YAML)**
-  - Base Image version: latest
-- Customize
-  - Provisioner: PowerShell
-  - Run Windows Update as last customization: checked
-  - Build path: the path to your script in your repo (relative to root of the repo directory)
-  - Inline customization script: & 'c:\buildartifacts\path_to_your_script\your_script.ps1'
-  - Storage account: your storage account
-- Distribute
-  - Distribute type: Shared Image Gallery
-  - Image id for Shared Gallery Image: resource id of the image definition
-  - Regions separated by comma: replication regions - no need to enter the AIB region
-- Optional Settings
-  - VM Size: Standard_DS4_v2
+- **Azure Subscription:** select the subscription where you enabled the AIB feature
+- **Resource group:** select your resource group where you added contributor access for AIB
+- **Location:** select a AIB [supported regions](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-overview#regions)
+- **Source**
+  - **Image type:** Marketplace
+  - **Base image:** Windows 19h1-Evd *(NOTE: The drop down does not include the image I'm looking for but can specify the exact SKU by overwritting the YAML)*
+  - **Base Image version:** latest
+- **Customize**
+  - **Provisioner:** PowerShell
+  - **Run Windows Update as last customization:** checked
+  - **Build path:** the path to your script in your repo (relative to root of the repo directory)
+  - **Inline customization script:** & 'c:\buildartifacts\path_to_your_script\your_script.ps1'
+  - **Storage account: your storage account
+- **Distribute**
+  - **Distribute type:** Shared Image Gallery
+  - **Image id for Shared Gallery Image:** resource id of the image definition
+  - **Regions separated by comma:** replication regions - no need to enter the AIB region
+- **Optional Settings**
+  - **VM Size:** Standard_DS4_v2
 
-Sample YAML which uses a self-hosted agent pool:
+Here is a sample YAML which uses a self-hosted agent pool for deployment:
 
-> Set the timeoutInMinutes value to 0 so that it can run for as long as needed from your local build agent
+> Be sure to set the ``timeoutInMinutes`` value to ``0`` so that the job can run as long as needed on your local build agent. Also, replace values in ``<>`` with your environment specific values.
 
 ```yaml
 trigger:
@@ -250,13 +279,13 @@ Take the task id and query for the build status
 **PowerShell:**
 
 ```powershell
-(Get-AzResource -ResourceGroupName <YOUR_RESOURCE_GROUP_NAME> -ResourceType Microsoft.VirtualMachineImages/imageTemplates -Name t_1585957915914).Properties.lastRunStatus
+(Get-AzResource -ResourceGroupName <YOUR_RESOURCE_GROUP_NAME> -ResourceType Microsoft.VirtualMachineImages/imageTemplates -Name <YOUR_TEMPLATE_NAME>).Properties.lastRunStatus
   ```
 
 **CLI:**
 
 ```sh
-az resource show -g <YOUR_RESOURCE_GROUP_NAME> -n t_1585957915914 --resource-type Microsoft.VirtualMachineImages/imageTemplates --query 'properties.lastRunStatus'
+az resource show -g <YOUR_RESOURCE_GROUP_NAME> -n <YOUR_TEMPLATE_NAME> --resource-type Microsoft.VirtualMachineImages/imageTemplates --query 'properties.lastRunStatus'
 ```
 
 The job will eventually finish (mostly likely more than an hour later depending on build script, windows update, and replication regions) and you can setup email alerts to trigger upon failure or success.
@@ -265,7 +294,9 @@ Once it is finished you can view the latest version in your Shared Image Gallery
 
 ## Azure DevOps Releases
 
-Now, that your image is updated, you are ready to update your host pool. You can use the following templates which have been modified to deploy from Shared Image Galleries:
+Now, that your image is updated, you are ready to update your host pool. You can use the following templates which have been modified from the original [RDS-Templates](https://github.com/Azure/RDS-Templates) repo to be able to deploy host pools using Shared Image Galleries.
+
+Take these files and commit them into your ``host-pools/templates`` directory in your repository
 
 - [Create host pool using image from SIG](https://raw.githubusercontent.com/pauldotyu/RDS-Templates/master/wvd-templates/Create%20and%20provision%20WVD%20host%20pool/mainTemplate.json)
 
@@ -275,12 +306,106 @@ Using the templates above, you can build a release pipeline that triggers off of
 
 ![release-pipeline](img/release-pipeline.png)
 
-You should source control the hostpool templates and chain pipeline builds together to automate the workflow.
-
-As an example:
+### Overview of Host Pool Release Pipeline:
 
 - The image build pipeline completes and triggers a hostpool pipeline
 - The hostpool pipeline will take my ARM template JSON files and publish as build artifacts
   - As part of the hostpool pipeline options, I can format the build number to be ``$(DayOfYear)$(Rev:r)`` so that my build numbers are short and unique. In the screen shot above, my build number is **0942** which represents the 94th day of the year and the second build of the day. This will be used in a later pipeline.
 - The hostpool pipeline completes and triggers the **Update existing host pool** to push my new image to an existing hostpool by submitting the ARM template and updating its parameter using Azure DevOps Pipeline Variables. 
   - Using variables we can update the host pool VM name prefix to our build number so we'll easily be able to identify the day of the year that the image was built.
+
+### Host Pool Template Pipline
+
+1. In Azure Piplines, click **Pipelines** then the **New pipeline** button
+
+1. Click on the **Use the classic editor link** at the bottom
+
+1. Select your repository and click **Continue**
+
+1. Click on the **Empty job** link
+
+1. This job will run on a Micrsoft-hosted agent
+
+1. Click on **Agent job 1** and update the display name to ***Copy files and publish***
+
+1. Click the ***+*** icon on the agent task
+
+1. Search for ***Copy files*** and select it from the task list and add it to your job
+
+1. Click on the task and set the **source** and **target** folders. For **Source Folder** you can choose your directory by clicking the **...** button. Choose the directory where you stored your host pool deployment templates. For **Target Folder** set the value to ``$(Build.ArtifactStagingDirectory)``
+
+1. Click the ***+*** icon on the agent task again to add another task
+
+1. Search for ***Publish build artifacts*** and select it from the task list and add it to your job. No need for additional settings here as it is set to publish to ``$(Build.ArtifactStagingDirectory)`` by default
+
+1. Now, click on the **Triggers** tab and check the ***Enable continuous integration** checkbox. This will cause your pipeline to run each time you commit a change to the repository (i.e., push, pull request)
+
+   1. Click the **+ Add** button under **Path filters**
+   
+   1. **Path specification** should point to the path where you store your host pool templates (e.g., ```wvd/host-pools```)
+
+   1. Next, click the **+ Add** button next to **Build completion** and select your image build as the ***Triggering build***
+
+1. Click on the **Options** tab and modify the ***Build number format*** to ``$(DayOfYear)$(Rev:r)``. This is a bit of trickery we'll use to get a unique image build name which we'll use updating our fleet of host pool VMs :-)
+
+1. Click **Save & queue**
+
+### Host Pool Release Pipline
+
+1. In Azure Piplines, click **Releases** then the **+ New** button. This will enable options to create or import pipelines. Click on **+ New release pipeline**.
+
+1. Click on the **Empty job** link
+
+1. Your release will have an initial stage named ***Stage 1***. Rename this to your WVD tenant and host pool name in your staging or validation ring.
+
+1. Click on the **+ Add an artifact** button and select the ***host pool*** pipeline as the source. This setting will give our Release pipeline access to the host pool template files and build number we can use for our host pool VM names. 
+
+1. Click the ***task*** link for your initial stage
+
+1. Click on the ***Agent job*** and click the **+** icon to add a new task
+
+1. Search for ***File transform*** and select it from the task list and add it to your job
+
+1. Click on the task and configure the following:
+
+   1. **Package or folder**: Click the ***...*** button and select the directory that contains your template files (e.g., ``$(System.DefaultWorkingDirectory)/_WVDHostPool-CI/drop/templates``)
+  
+   1. **File format**: Select JSON
+  
+   1. **Target files**: Enter ``**/*parameters.json``
+
+1. Parameters can be swapped out using naming conventions
+
+   > Values can be set for each parameter in the ARM template parameters by entering a variables in Azure Pipelines. The variables are name/value pairs and the name of the parameter needs to follow the format of ``parameters.<YOUR_PARAMETER_NAME>.value``. The value is deployment or environment specific. If you have parameters that you reuse often, consider using variable groups so that you can use them across pipeline projects.
+
+1. Next, search for ***Azure resource group deployment*** and select it from the task list and add it to your job
+
+1. Click on the task and configure the following:
+
+   1. **Azure subscription:** Select your Azure subscription (you should have a service connection)
+
+   1. **Action:** Select *Create or update resource group*
+
+   1. **Resource group:** Select or enter your resource group
+
+   1. **Location:** Select a region for deployment
+
+   1. **Template location:** Make sure *Linked artifact* is selected
+
+   1. **Template:** Select your host pool deployment JSON file
+
+   1. **Template parameters:** Select your host pool deployment parameter JSON file
+
+   1. **Deployment mode:** Make sure *Incremental* is selected
+
+1. Now, we want to clone this stage so that we can build our production WVD host pool. Click on your staging/validation stage and click on the **Clone** button
+
+   1. Be sure to rename the stage and click on the Variables tab and update the parameter values accordingly
+
+   1. Also, be sure to click on the **Azure Deployment** task and update the Azure deployment details
+
+1. To ensure, the production host pools do not get released until the staging/validation ring has been validated, you can put an approval gate in place.
+
+   1. Click on the **Pre-deployment conditions** bubble for the production stage and toggle on the ***Pre-deployment approvals*** switch.
+
+   1. Enter approver email addresses. When the staging/validation host pool deployments are complete, the release will be halted and an email will be sent to the list of approvers. The approver can approve by clicking a link from the email or approve from the release pipeline. The release will sit for X amount of days before being cancelled completely. Once the approver clicks ***Approve*** the production stage will continue with host pool deployment
