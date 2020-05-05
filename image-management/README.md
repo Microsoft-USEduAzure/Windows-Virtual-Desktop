@@ -314,98 +314,159 @@ Using the templates above, you can build a release pipeline that triggers off of
 - The hostpool pipeline completes and triggers the **Update existing host pool** to push my new image to an existing hostpool by submitting the ARM template and updating its parameter using Azure DevOps Pipeline Variables. 
   - Using variables we can update the host pool VM name prefix to our build number so we'll easily be able to identify the day of the year that the image was built.
 
-### Host Pool Template Pipline
+### Host Pool Template Pipeline
 
-1. In Azure Piplines, click **Pipelines** then the **New pipeline** button
+In Azure Piplines, click **Pipelines** then the **Create Pipeline** button if this is your first pipeline or the **New pipeline** button if you already have pipelines built
 
-1. Click on the **Use the classic editor link** at the bottom
+![New Pipeline](img/hostpool-pipeline/new-pipeline.png)
 
-1. Select your repository and click **Continue**
+Click on the **Use the classic editor link** at the bottom
 
-1. Click on the **Empty job** link
+![Classic editor](img/hostpool-pipeline/classic-editor.png)
 
-1. This job will run on a Micrsoft-hosted agent
+Select your repository and click **Continue**
 
-1. Click on **Agent job 1** and update the display name to ***Copy files and publish***
+![Select source](img/hostpool-pipeline/select-source.png)
 
-1. Click the ***+*** icon on the agent task
+Click on the **Empty job** link
 
-1. Search for ***Copy files*** and select it from the task list and add it to your job
+![Select source](img/hostpool-pipeline/empty-job.png)
 
-1. Click on the task and set the **source** and **target** folders. For **Source Folder** you can choose your directory by clicking the **...** button. Choose the directory where you stored your host pool deployment templates. For **Target Folder** set the value to ``$(Build.ArtifactStagingDirectory)``
+This job will run on a Micrsoft-hosted agent. Click on **Agent job 1** and update the display name to ***Copy files and publish***
 
-1. Click the ***+*** icon on the agent task again to add another task
+![Select source](img/hostpool-pipeline/agent-job.png)
 
-1. Search for ***Publish build artifacts*** and select it from the task list and add it to your job. No need for additional settings here as it is set to publish to ``$(Build.ArtifactStagingDirectory)`` by default
+Click the ***+*** icon on the agent task
 
-1. Now, click on the **Triggers** tab and check the ***Enable continuous integration** checkbox. This will cause your pipeline to run each time you commit a change to the repository (i.e., push, pull request)
+![](img/hostpool-pipeline/add-task.png)
 
-   1. Click the **+ Add** button under **Path filters**
+Search for ***Copy files*** and select it from the task list and add it to your job
+
+![](img/hostpool-pipeline/copy-files.png)
+
+Click on the "Copy files" task and set the **source** and **target** folders. For **Source Folder** you can choose your directory by clicking the **...** button. Choose the directory where you stored your host pool deployment templates. For **Target Folder** set the value to ``$(Build.ArtifactStagingDirectory)``
+
+![](img/hostpool-pipeline/source-target-folders.png)
+
+Click the ***+*** icon on the agent task again to add another task. Search for ***Publish build artifacts*** and select it from the task list and add it to your job. No need for additional settings here as it is set to publish to ``$(Build.ArtifactStagingDirectory)`` by default.
+
+![](img/hostpool-pipeline/publish-build-artifacts.png)
+
+Now, click on the **Triggers** tab and check the ***Enable continuous integration** checkbox. This will cause your pipeline to run each time you commit a change to the repository (i.e., push, pull request)
+
+![](img/hostpool-pipeline/build-triggers.png)
+
+   - Click the **+ Add** button under **Path filters**
    
-   1. **Path specification** should point to the path where you store your host pool templates (e.g., ```wvd/host-pools```)
+   - **Path specification** should point to the path where you store your host pool templates (e.g., ```wvd/host-pools```)
 
-   1. Next, click the **+ Add** button next to **Build completion** and select your image build as the ***Triggering build***
+   - Next, click the **+ Add** button next to **Build completion** and select your image build as the ***Triggering build***
+   
+Click on the **Options** tab and modify the ***Build number format*** to ``$(DayOfYear)$(Rev:r)``. This is a bit of trickery we'll use to get a unique image build name which we'll use updating our fleet of host pool VMs :-)
 
-1. Click on the **Options** tab and modify the ***Build number format*** to ``$(DayOfYear)$(Rev:r)``. This is a bit of trickery we'll use to get a unique image build name which we'll use updating our fleet of host pool VMs :-)
+![](img/hostpool-pipeline/build-number-format.png)
 
-1. Click **Save & queue**
+Click **Save & queue**, enter a save comment (optional) and click the **Save & run** button
 
-### Host Pool Release Pipline
+![](img/hostpool-pipeline/save-and-queue.png)
 
-1. In Azure Piplines, click **Releases** then the **+ New** button. This will enable options to create or import pipelines. Click on **+ New release pipeline**.
+### Host Pool Release Pipline - Update Existing Host Pool
 
-1. Click on the **Empty job** link
+In Azure Piplines, click **Releases** then the **New pipeline** button if this is your first release or the **+ New** button if you already have releases built. This will enable options to create or import pipelines. Click on **+ New release pipeline**.
 
-1. Your release will have an initial stage named ***Stage 1***. Rename this to your WVD tenant and host pool name in your staging or validation ring.
+![](img/hostpool-pipeline/new-release-pipeline.png)
 
-1. Click on the **+ Add an artifact** button and select the ***host pool*** pipeline as the source. This setting will give our Release pipeline access to the host pool template files and build number we can use for our host pool VM names. 
+Click on the **Empty job** link
 
-1. Click the ***task*** link for your initial stage
+![](img/hostpool-pipeline/release-empty-job.png)
 
-1. Click on the ***Agent job*** and click the **+** icon to add a new task
+Your release will have an initial stage named ***Stage 1***. Rename this to your WVD tenant and host pool name in your staging or validation ring.
 
-1. Search for ***File transform*** and select it from the task list and add it to your job
+![](img/hostpool-pipeline/release-stage-name.png)
 
-1. Click on the task and configure the following:
+Click on the **+ Add an artifact** button and select the ***host pool*** pipeline as the source. This setting will give our Release pipeline access to the host pool template files and build number we can use for our host pool VM names. 
 
-   1. **Package or folder**: Click the ***...*** button and select the directory that contains your template files (e.g., ``$(System.DefaultWorkingDirectory)/_WVDHostPool-CI/drop/templates``)
+![](img/hostpool-pipeline/release-build-artifact.png)
+
+Click the ***task*** link for your initial stage
+
+![](img/hostpool-pipeline/release-stage-task.png)
+
+Click on the ***Agent job*** and click the **+** icon to add a new task
+
+![](img/hostpool-pipeline/release-stage-task-add.png)
+
+Search for ***File transform*** and select it from the task list and add it to your job
+
+![](img/hostpool-pipeline/release-task-file-transform.png)
+
+Click on the task and configure the following:
+
+![](img/hostpool-pipeline/release-task-file-transform-config.png)
+
+   - **Package or folder**: Click the ***...*** button and select the directory that contains your template files (e.g., ``$(System.DefaultWorkingDirectory)/_WVDHostPool-CI/drop/templates``)
   
-   1. **File format**: Select JSON
+   - **File format**: Select JSON
   
-   1. **Target files**: Enter ``**/*parameters.json``
+   - **Target files**: Enter ``**/*parameters.json``
 
-1. Parameters can be swapped out using naming conventions
+Parameter values can be set for each pipeline using variables. Values can be set for each parameter in the ARM template parameters by entering a variables in Azure Pipelines. The variables are name/value pairs and the name of the parameter needs to follow the format of ``parameters.<YOUR_ARM_TEMPLATE_PARAMETER_NAME>.value``. The value is deployment or environment specific. If you have parameters that you reuse often, consider using variable groups so that you can use them across pipeline projects.
 
-   > Values can be set for each parameter in the ARM template parameters by entering a variables in Azure Pipelines. The variables are name/value pairs and the name of the parameter needs to follow the format of ``parameters.<YOUR_PARAMETER_NAME>.value``. The value is deployment or environment specific. If you have parameters that you reuse often, consider using variable groups so that you can use them across pipeline projects.
+![](img/hostpool-pipeline/pipeline-parameters.png)
 
-1. Next, search for ***Azure resource group deployment*** and select it from the task list and add it to your job
+Next, search for ***Azure resource group deployment*** and select it from the task list and add it to your job
 
-1. Click on the task and configure the following:
+![](img/hostpool-pipeline/release-task-arm-template.png)
 
-   1. **Azure subscription:** Select your Azure subscription (you should have a service connection)
+Click on the task and configure the following:
 
-   1. **Action:** Select *Create or update resource group*
+![](img/hostpool-pipeline/release-task-arm-template-config.png)
 
-   1. **Resource group:** Select or enter your resource group
+   - **Azure subscription:** Select your Azure subscription (you should have a service connection)
 
-   1. **Location:** Select a region for deployment
+   - **Action:** Select *Create or update resource group*
 
-   1. **Template location:** Make sure *Linked artifact* is selected
+   - **Resource group:** Select or enter your resource group
 
-   1. **Template:** Select your host pool deployment JSON file
+   - **Location:** Select a region for deployment
 
-   1. **Template parameters:** Select your host pool deployment parameter JSON file
+   - **Template location:** Make sure *Linked artifact* is selected
 
-   1. **Deployment mode:** Make sure *Incremental* is selected
+   - **Template:** Select your host pool deployment JSON file
 
-1. Now, we want to clone this stage so that we can build our production WVD host pool. Click on your staging/validation stage and click on the **Clone** button
+   - **Template parameters:** Select your host pool deployment parameter JSON file
 
-   1. Be sure to rename the stage and click on the Variables tab and update the parameter values accordingly
+   - **Deployment mode:** Make sure *Incremental* is selected
 
-   1. Also, be sure to click on the **Azure Deployment** task and update the Azure deployment details
+Now, we want to clone this stage so that we can build our production WVD host pool. Click on your staging/validation stage and click on the **Clone** button
 
-1. To ensure, the production host pools do not get released until the staging/validation ring has been validated, you can put an approval gate in place.
+![](img/hostpool-pipeline/release-clone-stage.png)
 
-   1. Click on the **Pre-deployment conditions** bubble for the production stage and toggle on the ***Pre-deployment approvals*** switch.
+   - Be sure to rename the stage and click on the Variables tab and update the parameter values accordingly
 
-   1. Enter approver email addresses. When the staging/validation host pool deployments are complete, the release will be halted and an email will be sent to the list of approvers. The approver can approve by clicking a link from the email or approve from the release pipeline. The release will sit for X amount of days before being cancelled completely. Once the approver clicks ***Approve*** the production stage will continue with host pool deployment
+   - Also, be sure to click on the **Azure Deployment** task and update the Azure deployment details
+
+To ensure, the production host pools do not get released until the staging/validation ring has been validated, you can put an approval gate in place. Click on the **Pre-deployment conditions** bubble for the production stage and toggle on the ***Pre-deployment approvals*** switch.
+
+![](img/hostpool-pipeline/release-gate.png)
+
+Enter approver email addresses. When the staging/validation host pool deployments are complete, the release will be halted and an email will be sent to the list of approvers. The approver can approve by clicking a link from the email or approve from the release pipeline. The release will sit for X amount of days before being cancelled completely. Once the approver clicks ***Approve*** the production stage will continue with host pool deployment
+
+> NOTE: The approver must exist in your Azure DevOps Organization
+
+![](img/hostpool-pipeline/release-predeployment-approval.png)
+
+
+Finally, give your release pipeline a descriptive name, click the trigger icon in Artifacts and enable a **Continuous deployment trigger**, and click the **Save** button. 
+
+![](img/hostpool-pipeline/release-trigger.png)
+
+## Congratulations! 
+
+This pipeline is now set to automatically trigger each time a host pool pipeline job completes. If you recall, the host pool pipeline will also trigger each time a host pool template change is made or whenever a new image build is completed. 
+
+So we now have a full dependency chain of being able to deploy host pools to our validation ring on a build script change or host pool template change. 
+
+Once the staging/validation ring has been validated, an approver can click approve on the production pre-deployment gate and automatically deploy the new image in production. 
+
+Easy peasy, right? :-)
