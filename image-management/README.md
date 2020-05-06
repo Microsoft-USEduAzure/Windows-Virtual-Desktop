@@ -5,6 +5,8 @@
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/shared-image-galleries
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery
 - https://github.com/danielsollondon/azvmimagebuilder
+- https://github.com/markhooks81/Winter-Ready-2020/
+- https://github.com/whitscripts/wvd/
 - https://github.com/pauldotyu/RDS-Templates
 
 **To achieve automation of common WVD management tasks the following components will be used:**
@@ -223,7 +225,7 @@ Click the ``Azure VM Image Builder Test(Preview)`` task and fill in the followin
   - **Run Windows Update as last customization:** checked
   - **Build path:** the path to your script in your repo (relative to root of the repo directory)
   - **Inline customization script:** & 'c:\buildartifacts\path_to_your_script\your_script.ps1'
-  - **Storage account: your storage account
+  - **Storage account:** your storage account
 - **Distribute**
   - **Distribute type:** Shared Image Gallery
   - **Image id for Shared Gallery Image:** resource id of the image definition
