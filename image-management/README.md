@@ -18,12 +18,15 @@
 
 ## High-level Process
 
-1. Engineer maintains PowerShell script for customizing images and commits to git repo
-1. Build pipeline listens for pushes made to the git repo and triggers a pipeline execution to build/customize a new image using Azure Image Builder
-1. New image is distributed to Shared Image Gallery and optionally replicated to regions
-1. New Shared Image Gallery image version will be used as the VM source and deploy to staging host pool
-1. Staging host pool deployment completes and arrives at approval gate
-1. Production host pool deployment is approved and deployed
+![high-level-process](img/hostpool-pipeline/process-flow.png)
+
+- Engineer maintains PowerShell script for customizing images and commits to git repo
+- Build pipeline listens for pushes made to the git repo and triggers a pipeline execution to build/customize a new image using Azure Image Builder
+- Image builder pulls from image source, customizes image using PowerShell script, and optionally applies Windows updates
+- New image is distributed to Shared Image Gallery and optionally replicated to regions. New Shared Image Gallery image version will be used as the VM source and deploy to staging host pool
+- Upon completion of image build process, host pool pipline kicks off to push ARM templates as build artificats and triggers a release deployment to deploy new image into staging environment
+- Staging host pool deployment completes and arrives at approval gate
+- Production host pool deployment is approved and deployed
 
 ## Prerequisites
 
