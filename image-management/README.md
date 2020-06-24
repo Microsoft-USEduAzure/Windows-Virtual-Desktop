@@ -35,6 +35,12 @@
 - Create an Azure DevOps organization/project
 - Add Azure Image Builder Task from Azure DevOps marketplace to your organization
 
+## Connect to your Azure account
+
+```powershell
+Connect-AzAccount
+```
+
 ## Enable Azure Image Builder
 
 > PowerShell used here to keep consistent with WVD tooling. CLI equivalent commands can be found [here](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder)
@@ -65,16 +71,66 @@ Register-AzResourceProvider -ProviderNamespace Microsoft.VirtualMachineImages
 Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
 ```
 
-When you registered the VirtualMachineTemplatePreview feature, it added the AIB identity in your tenant. You will need to then create a resource group and grant the AIB identity the contributor role on your new resource group
+## Create a user-assigned managed identity (new requirement as of 5/26/2020)
 
-> The ApplicationId for AIB is static
+Use this [guide](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-powershell) to create the managed identity
 
 ```powershell
-$ResourceGroupName = "<YOUR-RESOURCE-GROUP-NAME>"
-$Location = "<LOCATION>"
-$ResourceGroup = New-AzResourceGroup -Name $ResourceGroupName -Location $Location
-New-AzRoleAssignment -RoleDefinitionName "Contributor" -ApplicationId "cf32a0cc-373c-47c9-9156-0db11f6a6dfc" -ResourceGroupName $ResourceGroup
+# Get the prerelease version of PowerShellGet, you might have to exit and re-launch PowerShell
+Install-Module -Name PowerShellGet -AllowPrerelease
+
+# Install the prerelease version of the Az.ManagedServiceIdentity module
+Install-Module -Name Az.ManagedServiceIdentity -AllowPrerelease
+
+# Create a user-assigned managed identity
+New-AzUserAssignedIdentity -ResourceGroupName "<YOUR-RESOURCE-GROUP-NAME>" -Name "<YOUR-USER-ASSIGNED-IDENTITY-NAME>"
+
+# List user-assigned managed identities
+Get-AzUserAssignedIdentity -ResourceGroupName "<YOUR-RESOURCE-GROUP-NAME>"
 ```
+
+Your user-assigned managed identity will look like this. Copy to clipboard and keep it handy
+
+``/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx/resourcegroups/<YOUR-RESOURCE-GROUP-NAME>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<YOUR-USER-ASSIGNED-IDENTITY-NAME>``
+
+Use this [guide](https://github.com/danielsollondon/azvmimagebuilder/blob/master/aibPermissions.md#azure-vm-image-builder-permissions-explained-and-requirements) to grant permissions
+
+```powershell
+$imageResourceGroup="<YOUR-RESOURCE-GROUP-NAME>"
+
+# Get current subscription Id
+$subscriptionId=(Get-AzContext).Subscription.Id
+
+# Make role name unique, to avoid clashes in the same AAD Domain
+$timeInt=$(get-date -UFormat "%s")
+$imageRoleDefName="Azure Image Builder Service Image Creation Role "+$timeInt
+
+# Get the user-identity properties
+$idenityNameResourceId=$(Get-AzUserAssignedIdentity -ResourceGroupName "<YOUR-RESOURCE-GROUP-NAME>" -Name "<YOUR-USER-ASSIGNED-IDENTITY-NAME>").Id
+$idenityNamePrincipalId=$(Get-AzUserAssignedIdentity -ResourceGroupName "<YOUR-RESOURCE-GROUP-NAME>" -Name "<YOUR-USER-ASSIGNED-IDENTITY-NAME>").PrincipalId
+
+# Assign permissions for identity to distribute images. This command will download and update the custom role template
+$aibRoleImageCreationUrl="https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleImageCreation.json"
+$aibRoleImageCreationPath = "aibRoleImageCreation.json"
+
+# Download config
+Invoke-WebRequest -Uri $aibRoleImageCreationUrl -OutFile $aibRoleImageCreationPath -UseBasicParsing
+
+# Update role definition template
+((Get-Content -path $aibRoleImageCreationPath -Raw) -replace '<subscriptionID>',$subscriptionID) | Set-Content -Path $aibRoleImageCreationPath
+((Get-Content -path $aibRoleImageCreationPath -Raw) -replace '<rgName>', $imageResourceGroup) | Set-Content -Path $aibRoleImageCreationPath
+
+## Randomize the role definition name to make it unique for this example
+((Get-Content -path $aibRoleImageCreationPath -Raw) -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName) | Set-Content -Path $aibRoleImageCreationPath
+
+# Create role definition
+New-AzRoleDefinition -InputFile  ./aibRoleImageCreation.json
+
+# Grant role definition to image builder service principal
+New-AzRoleAssignment -ObjectId $idenityNamePrincipalId -RoleDefinitionName $imageRoleDefName -Scope "/subscriptions/$subscriptionID/resourceGroups/$imageResourceGroup"
+```
+
+> NOTE: If you see this error: 'New-AzRoleDefinition: Role definition limit exceeded. No more role definitions can be created.' See this article to resolve: https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting
 
 ## Create an Azure Storage account
 
@@ -219,9 +275,11 @@ Click the ``Azure VM Image Builder Test(Preview)`` task and fill in the followin
 - **Azure Subscription:** select the subscription where you enabled the AIB feature
 - **Resource group:** select your resource group where you added contributor access for AIB
 - **Location:** select a AIB [supported regions](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-overview#regions)
+- **Managed Identity:**
+  - **Identity Resource Id** enter your managed identity resource id
 - **Source**
   - **Image type:** Marketplace
-  - **Base image:** Windows 19h1-Evd *(NOTE: The drop down does not include the image I'm looking for but can specify the exact SKU by overwritting the YAML)*
+  - **Base image (pub/offer/sku):** Windows 19h1-Evd *(NOTE: The drop down does not include the image, but you can enter the pub:offer:sku for a specific image - queries below will show you how to pull the available images)*
   - **Base Image version:** latest
 - **Customize**
   - **Provisioner:** PowerShell
@@ -235,6 +293,19 @@ Click the ``Azure VM Image Builder Test(Preview)`` task and fill in the followin
   - **Regions separated by comma:** replication regions - no need to enter the AIB region
 - **Optional Settings**
   - **VM Size:** Standard_DS4_v2
+
+Retrieve available images
+
+```sh
+# Get list of publishers
+az vm image list-publishers -l westus2 --query "[?contains(name, 'Visual')].{Publisher:name}" -o table
+
+# Get list of offers
+az vm image list-offers -l westus2 -p MicrosoftVisualStudio --query "[].{Offer:name}" -o table
+
+# Get list of SKUs
+az vm image list-skus -l westus2 -p MicrosoftVisualStudio -f visualstudio2019latest --query "[].{SKU:name}" -o table
+```
 
 Here is a sample YAML which uses a self-hosted agent pool for deployment:
 
@@ -255,8 +326,9 @@ stages:
     steps:
     - task: AzureImageBuilderTask@1
       inputs:
+        managedIdentity: /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx/resourcegroups/<YOUR-RESOURCE-GROUP-NAME>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<YOUR-USER-ASSIGNED-IDENTITY-NAME>
         imageSource: 'marketplace'
-        baseImage: 'microsoftwindowsdesktop:office-365:19h2-evd-o365pp:windows'
+        baseImagePubOfferSku: 'microsoftwindowsdesktop:office-365:20h1-evd-o365pp'
         provisioner: 'powershell'
         windowsUpdateProvisioner: true
         packagePath: 'wvd/images'
