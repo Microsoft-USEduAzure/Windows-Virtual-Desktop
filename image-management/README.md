@@ -41,6 +41,14 @@
 Connect-AzAccount
 ```
 
+## If necessary, select the proper Azure Subscription
+
+```powershell
+Get-AzSubscription
+Get-AzContext
+Set-AzContext -SubscriptionId <YOUR_SUBSCRIPTION_ID>
+```
+
 ## Enable Azure Image Builder
 
 > PowerShell used here to keep consistent with WVD tooling. CLI equivalent commands can be found [here](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/image-builder)
