@@ -15,16 +15,16 @@
                                         "AADTenantId": "<Your AAD Tenant ID>",
                                         "ConnectionAssetName": "AzureRunAsConnection",
                                         "HostPoolName": "<Your Hostpool Name>",
-                                        "LimitSecondsToForceLogOffUser": "<Number of Seconds before Log Off>",
+                                        "LimitSecondsToForceLogOffUser": 0,
                                         "LogAnalyticsPrimaryKey": "<Your Log Analytics Primary Key>",
                                         "LogAnalyticsWorkspaceId": "<Your Log Analtics Workspace ID>",
                                         "LogOffMessageBody": "Please save your worked",
                                         "LogOffMessageTitle": "You are being logged off",
                                         "MaintenanceTagName": "DoNotTouch",
                                         "ResourceGroupName": "<Your Hostpool Resource Group Name>",
-                                        "SessionThresholdPerCPU": "<Number of Concurrent Sessions per CPU Core>",
+                                        "SessionThresholdPerCPU": 1,
                                         "SubscriptionId": "<Your Azure Subscription ID>",
-                                        "TimeDifference": "<Your Timezone Difference vs UTC",
+                                        "TimeDifference": "-5:00",
                                         "UseARMAPI": {
                                             "IsPresent": true
                                         }
@@ -42,36 +42,36 @@
                                         "Day": "Monday",
                                         "MinimumHostsOffHours": 1,
                                         "MinimumHostsPeakHours": 2,
-                                        "PeakEnd": "18:00",
+                                        "PeakEnd": "17:00",
                                         "PeakStart": "8:00"
                                     },
                                     {
                                         "Day": "Tuesday",
                                         "MinimumHostsOffHours": 1,
                                         "MinimumHostsPeakHours": 2,
-                                        "PeakEnd": "18:00",
-                                        "PeakStart": "8:00"
+                                        "PeakEnd": "16:30",
+                                        "PeakStart": "9:30"
                                     },
                                     {
                                         "Day": "Wednesday",
                                         "MinimumHostsOffHours": 1,
                                         "MinimumHostsPeakHours": 2,
-                                        "PeakEnd": "18:00",
-                                        "PeakStart": "8:00"
+                                        "PeakEnd": "14:00",
+                                        "PeakStart": "10:00"
                                     },
                                     {
                                         "Day": "Thursday",
                                         "MinimumHostsOffHours": 1,
                                         "MinimumHostsPeakHours": 2,
-                                        "PeakEnd": "18:00",
-                                        "PeakStart": "8:00"
+                                        "PeakEnd": "16:30",
+                                        "PeakStart": "9:30"
                                     },
                                     {
                                         "Day": "Friday",
                                         "MinimumHostsOffHours": 1,
                                         "MinimumHostsPeakHours": 2,
-                                        "PeakEnd": "18:00",
-                                        "PeakStart": "8:00"
+                                        "PeakEnd": "10:00",
+                                        "PeakStart": "14:00"
                                     },
                                     {
                                         "Day": "Saturday",
