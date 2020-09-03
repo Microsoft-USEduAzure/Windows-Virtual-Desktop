@@ -56,441 +56,441 @@ Before proceeding, we must first ensure the exisitng scaling tool has been deplo
 1. Copy the contents below and paste them into the Logic App code view. Alternatively, you may download the JSON file here: [WVD Daily Scaling JSON](files/dailyscaling.json)
 
     ```json
-        {
-            "definition": {
-                "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-                "actions": {
-                    "Configuration": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "Schedule",
-                                    "type": "object",
-                                    "value": {
-                                        "AutomationURI": "<Your Azure Automation URI>",
-                                        "HostpoolParams": [
-                                            {
-                                                "AADTenantId": "<Your AAD Tenant ID>",
-                                                "ConnectionAssetName": "AzureRunAsConnection",
-                                                "HostPoolName": "<Your Hostpool Name>",
-                                                "LimitSecondsToForceLogOffUser": "<Number of Seconds before Log Off>",
-                                                "LogAnalyticsPrimaryKey": "<Your Log Analytics Primary Key>",
-                                                "LogAnalyticsWorkspaceId": "<Your Log Analtics Workspace ID>",
-                                                "LogOffMessageBody": "Please save your worked",
-                                                "LogOffMessageTitle": "You are being logged off",
-                                                "MaintenanceTagName": "DoNotTouch",
-                                                "ResourceGroupName": "<Your Hostpool Resource Group Name>",
-                                                "SessionThresholdPerCPU": "<Number of Concurrent Sessions per CPU Core>",
-                                                "SubscriptionId": "<Your Azure Subscription ID>",
-                                                "TimeDifference": "<Your Timezone Difference vs UTC",
-                                                "UseARMAPI": {
-                                                    "IsPresent": true
-                                                }
+    {
+        "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "actions": {
+                "Configuration": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "Schedule",
+                                "type": "object",
+                                "value": {
+                                    "AutomationURI": "<Your Azure Automation URI>",
+                                    "HostpoolParams": [
+                                        {
+                                            "AADTenantId": "<Your AAD Tenant ID>",
+                                            "ConnectionAssetName": "AzureRunAsConnection",
+                                            "HostPoolName": "<Your Hostpool Name>",
+                                            "LimitSecondsToForceLogOffUser": 0,
+                                            "LogAnalyticsPrimaryKey": "<Your Log Analytics Primary Key>",
+                                            "LogAnalyticsWorkspaceId": "<Your Log Analtics Workspace ID>",
+                                            "LogOffMessageBody": "Please save your worked",
+                                            "LogOffMessageTitle": "You are being logged off",
+                                            "MaintenanceTagName": "DoNotTouch",
+                                            "ResourceGroupName": "<Your Hostpool Resource Group Name>",
+                                            "SessionThresholdPerCPU": 1,
+                                            "SubscriptionId": "<Your Azure Subscription ID>",
+                                            "TimeDifference": "-5:00",
+                                            "UseARMAPI": {
+                                                "IsPresent": true
                                             }
-                                        ],
-                                        "Schedule": [
-                                            {
-                                                "Day": "Sunday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Monday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Tuesday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Wednesday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Thursday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Friday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            },
-                                            {
-                                                "Day": "Saturday",
-                                                "MinimumHostsOffHours": 1,
-                                                "MinimumHostsPeakHours": 2,
-                                                "PeakEnd": "18:00",
-                                                "PeakStart": "8:00"
-                                            }
-                                        ],
-                                        "Timezone": "Central Standard Time"
-                                    }
+                                        }
+                                    ],
+                                    "Schedule": [
+                                        {
+                                            "Day": "Sunday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "18:00",
+                                            "PeakStart": "8:00"
+                                        },
+                                        {
+                                            "Day": "Monday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "17:00",
+                                            "PeakStart": "8:00"
+                                        },
+                                        {
+                                            "Day": "Tuesday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "16:30",
+                                            "PeakStart": "9:30"
+                                        },
+                                        {
+                                            "Day": "Wednesday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "14:00",
+                                            "PeakStart": "10:00"
+                                        },
+                                        {
+                                            "Day": "Thursday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "16:30",
+                                            "PeakStart": "9:30"
+                                        },
+                                        {
+                                            "Day": "Friday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "10:00",
+                                            "PeakStart": "14:00"
+                                        },
+                                        {
+                                            "Day": "Saturday",
+                                            "MinimumHostsOffHours": 1,
+                                            "MinimumHostsPeakHours": 2,
+                                            "PeakEnd": "18:00",
+                                            "PeakStart": "8:00"
+                                        }
+                                    ],
+                                    "Timezone": "Central Standard Time"
                                 }
-                            ]
-                        },
-                        "runAfter": {},
-                        "type": "InitializeVariable"
-                    },
-                    "Get_Config_Variables": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "ConfigBodyValue",
-                                    "type": "string",
-                                    "value": "@{substring(substring(string(first(body('Parse_Through_Configuration')?['HostpoolParams'])),1,sub(length(string(first(body('Parse_Through_Configuration')?['HostpoolParams']))),1)),0,sub(length(substring(string(first(body('Parse_Through_Configuration')?['HostpoolParams'])),1,sub(length(string(first(body('Parse_Through_Configuration')?['HostpoolParams']))),1))),1))}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Parse_Through_Configuration": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
-                    },
-                    "Get_Parameters_for_Current_Day_of_Week": {
-                        "inputs": {
-                            "from": "@body('Parse_Through_Configuration')?['Schedule']",
-                            "where": "@equals(item()?['Day'], formatDateTime(variables('Today'), 'dddd'))"
-                        },
-                        "runAfter": {
-                            "Set_Current_Datetime": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "Query"
-                    },
-                    "HTTP": {
-                        "inputs": {
-                            "body": "@variables('ConfigBody')",
-                            "method": "POST",
-                            "uri": "@{body('Parse_Through_Configuration')?['AutomationURI']}"
-                        },
-                        "runAfter": {
-                            "If_During_Peak_Hours": [
-                                "Succeeded"
-                            ]
-                        },
-                        "runtimeConfiguration": {
-                            "staticResult": {
-                                "name": "HTTP0",
-                                "staticResultOptions": "Disabled"
                             }
-                        },
-                        "type": "Http"
+                        ]
                     },
-                    "If_During_Peak_Hours": {
+                    "runAfter": {},
+                    "type": "InitializeVariable"
+                },
+                "Get_Config_Variables": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "ConfigBodyValue",
+                                "type": "string",
+                                "value": "@{substring(substring(string(first(body('Parse_Through_Configuration')?['HostpoolParams'])),1,sub(length(string(first(body('Parse_Through_Configuration')?['HostpoolParams']))),1)),0,sub(length(substring(string(first(body('Parse_Through_Configuration')?['HostpoolParams'])),1,sub(length(string(first(body('Parse_Through_Configuration')?['HostpoolParams']))),1))),1))}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Parse_Through_Configuration": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
+                },
+                "Get_Parameters_for_Current_Day_of_Week": {
+                    "inputs": {
+                        "from": "@body('Parse_Through_Configuration')?['Schedule']",
+                        "where": "@equals(item()?['Day'], formatDateTime(variables('Today'), 'dddd'))"
+                    },
+                    "runAfter": {
+                        "Set_Current_Datetime": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Query"
+                },
+                "HTTP": {
+                    "inputs": {
+                        "body": "@variables('ConfigBody')",
+                        "method": "POST",
+                        "uri": "@{body('Parse_Through_Configuration')?['AutomationURI']}"
+                    },
+                    "runAfter": {
+                        "If_During_Peak_Hours": [
+                            "Succeeded"
+                        ]
+                    },
+                    "runtimeConfiguration": {
+                        "staticResult": {
+                            "name": "HTTP0",
+                            "staticResultOptions": "Disabled"
+                        }
+                    },
+                    "type": "Http"
+                },
+                "If_During_Peak_Hours": {
+                    "actions": {
+                        "Set_Config_Body_for_Peak_Hours": {
+                            "inputs": {
+                                "name": "ConfigBody",
+                                "value": "{ \"BeginPeakTime\": \"@{variables('StartTime')}\",  \"EndPeakTime\": \"@{variables('EndTime')}\",   \"MinimumNumberOfRDSH\": @{last(body('Get_Parameters_for_Current_Day_of_Week'))?['MinimumHostsPeakHours']},  @{variables('ConfigBodyValue')} }"
+                            },
+                            "runAfter": {},
+                            "type": "SetVariable"
+                        }
+                    },
+                    "else": {
                         "actions": {
-                            "Set_Config_Body_for_Peak_Hours": {
+                            "Set_Config_Body_for_Off_Hours": {
                                 "inputs": {
                                     "name": "ConfigBody",
-                                    "value": "{ \"BeginPeakTime\": \"@{variables('StartTime')}\",  \"EndPeakTime\": \"@{variables('EndTime')}\",   \"MinimumNumberOfRDSH\": @{last(body('Get_Parameters_for_Current_Day_of_Week'))?['MinimumHostsPeakHours']},  @{variables('ConfigBodyValue')} }"
+                                    "value": "{ \"BeginPeakTime\": \"@{variables('StartTime')}\",  \"EndPeakTime\": \"@{variables('EndTime')}\",   \"MinimumNumberOfRDSH\": @{last(body('Get_Parameters_for_Current_Day_of_Week'))?['MinimumHostsOffHours']},  @{variables('ConfigBodyValue')} }"
                                 },
                                 "runAfter": {},
                                 "type": "SetVariable"
                             }
-                        },
-                        "else": {
-                            "actions": {
-                                "Set_Config_Body_for_Off_Hours": {
-                                    "inputs": {
-                                        "name": "ConfigBody",
-                                        "value": "{ \"BeginPeakTime\": \"@{variables('StartTime')}\",  \"EndPeakTime\": \"@{variables('EndTime')}\",   \"MinimumNumberOfRDSH\": @{last(body('Get_Parameters_for_Current_Day_of_Week'))?['MinimumHostsOffHours']},  @{variables('ConfigBodyValue')} }"
-                                    },
-                                    "runAfter": {},
-                                    "type": "SetVariable"
-                                }
+                        }
+                    },
+                    "expression": {
+                        "and": [
+                            {
+                                "greaterOrEquals": [
+                                    "@formatDateTime(variables('Today'),'yyyy-MM-ddTHH:mm')",
+                                    "@formatDateTime(variables('StartDate'),'yyyy-MM-ddTHH:mm')"
+                                ]
+                            },
+                            {
+                                "lessOrEquals": [
+                                    "@formatDateTime(variables('Today'),'yyyy-MM-ddTHH:mm')",
+                                    "@formatDateTime(variables('EndDate'),'yyyy-MM-ddTHH:mm')"
+                                ]
                             }
-                        },
-                        "expression": {
-                            "and": [
-                                {
-                                    "greaterOrEquals": [
-                                        "@formatDateTime(variables('Today'),'yyyy-MM-ddTHH:mm')",
-                                        "@formatDateTime(variables('StartDate'),'yyyy-MM-ddTHH:mm')"
-                                    ]
-                                },
-                                {
-                                    "lessOrEquals": [
-                                        "@formatDateTime(variables('Today'),'yyyy-MM-ddTHH:mm')",
-                                        "@formatDateTime(variables('EndDate'),'yyyy-MM-ddTHH:mm')"
-                                    ]
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Set_End_Time_for_Today": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "If"
+                        ]
                     },
-                    "Initiate_Config_Body": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "ConfigBody",
-                                    "type": "string",
-                                    "value": "\n\n"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Get_Config_Variables": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
+                    "runAfter": {
+                        "Set_End_Time_for_Today": [
+                            "Succeeded"
+                        ]
                     },
-                    "Parse_Through_Configuration": {
-                        "inputs": {
-                            "content": "@variables('Schedule')",
-                            "schema": {
-                                "properties": {
-                                    "AutomationURI": {
-                                        "type": "string"
-                                    },
-                                    "HostpoolParams": {
-                                        "items": {
-                                            "properties": {
-                                                "AADTenantId": {
-                                                    "type": "string"
-                                                },
-                                                "ConnectionAssetName": {
-                                                    "type": "string"
-                                                },
-                                                "HostPoolName": {
-                                                    "type": "string"
-                                                },
-                                                "LimitSecondsToForceLogOffUser": {
-                                                    "type": "integer"
-                                                },
-                                                "LogAnalyticsPrimaryKey": {
-                                                    "type": "string"
-                                                },
-                                                "LogAnalyticsWorkspaceId": {
-                                                    "type": "string"
-                                                },
-                                                "LogOffMessageBody": {
-                                                    "type": "string"
-                                                },
-                                                "LogOffMessageTitle": {
-                                                    "type": "string"
-                                                },
-                                                "MaintenanceTagName": {
-                                                    "type": "string"
-                                                },
-                                                "ResourceGroupName": {
-                                                    "type": "string"
-                                                },
-                                                "SessionThresholdPerCPU": {
-                                                    "type": "number"
-                                                },
-                                                "SubscriptionId": {
-                                                    "type": "string"
-                                                },
-                                                "TimeDifference": {
-                                                    "type": "string"
-                                                },
-                                                "UseARMAPI": {
-                                                    "properties": {
-                                                        "IsPresent": {
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "required": [
-                                                "AADTenantId",
-                                                "SubscriptionId",
-                                                "ConnectionAssetName",
-                                                "HostPoolName",
-                                                "ResourceGroupName",
-                                                "LogAnalyticsPrimaryKey",
-                                                "LogAnalyticsWorkspaceId",
-                                                "LimitSecondsToForceLogOffUser",
-                                                "LogOffMessageBody",
-                                                "LogOffMessageTitle",
-                                                "MaintenanceTagName",
-                                                "SessionThresholdPerCPU",
-                                                "TimeDifference",
-                                                "UseARMAPI"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "type": "array"
-                                    },
-                                    "Schedule": {
-                                        "items": {
-                                            "properties": {
-                                                "Day": {
-                                                    "type": "string"
-                                                },
-                                                "MinimumHostsOffHours": {
-                                                    "type": "integer"
-                                                },
-                                                "MinimumHostsPeakHours": {
-                                                    "type": "integer"
-                                                },
-                                                "PeakEnd": {
-                                                    "type": "string"
-                                                },
-                                                "PeakStart": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "Day",
-                                                "PeakStart",
-                                                "PeakEnd",
-                                                "MinimumHostsPeakHours",
-                                                "MinimumHostsOffHours"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "type": "array"
-                                    },
-                                    "Timezone": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
+                    "type": "If"
+                },
+                "Initiate_Config_Body": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "ConfigBody",
+                                "type": "string",
+                                "value": "\n\n"
                             }
-                        },
-                        "runAfter": {
-                            "Configuration": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "ParseJson"
+                        ]
                     },
-                    "Set_Current_Datetime": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "Today",
-                                    "type": "string",
-                                    "value": "@{convertFromUtc(utcNow(), body('Parse_Through_Configuration')?['Timezone'])}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Initiate_Config_Body": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
+                    "runAfter": {
+                        "Get_Config_Variables": [
+                            "Succeeded"
+                        ]
                     },
-                    "Set_EndTime": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "EndTime",
-                                    "type": "string",
-                                    "value": "@{last(body('Get_Parameters_for_Current_Day_of_Week'))?['PeakEnd']}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Set_StartTime": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
-                    },
-                    "Set_End_Time_for_Today": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "EndDate",
-                                    "type": "string",
-                                    "value": "@{concat(formatDateTime(variables('Today'), 'yyyy-MM-dd'),' ',variables('EndTime'))}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Set_Start_Time_for_Today": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
-                    },
-                    "Set_StartTime": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "StartTime",
-                                    "type": "string",
-                                    "value": "@{last(body('Get_Parameters_for_Current_Day_of_Week'))?['PeakStart']}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Get_Parameters_for_Current_Day_of_Week": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
-                    },
-                    "Set_Start_Time_for_Today": {
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "StartDate",
-                                    "type": "string",
-                                    "value": "@{concat(formatDateTime(variables('Today'), 'yyyy-MM-dd'),' ',variables('StartTime'))}"
-                                }
-                            ]
-                        },
-                        "runAfter": {
-                            "Set_EndTime": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable"
-                    }
+                    "type": "InitializeVariable"
                 },
-                "contentVersion": "1.0.0.0",
-                "outputs": {},
-                "parameters": {},
-                "staticResults": {
-                    "HTTP0": {
-                        "outputs": {
-                            "headers": {},
-                            "statusCode": "OK"
-                        },
-                        "status": "Succeeded"
-                    }
+                "Parse_Through_Configuration": {
+                    "inputs": {
+                        "content": "@variables('Schedule')",
+                        "schema": {
+                            "properties": {
+                                "AutomationURI": {
+                                    "type": "string"
+                                },
+                                "HostpoolParams": {
+                                    "items": {
+                                        "properties": {
+                                            "AADTenantId": {
+                                                "type": "string"
+                                            },
+                                            "ConnectionAssetName": {
+                                                "type": "string"
+                                            },
+                                            "HostPoolName": {
+                                                "type": "string"
+                                            },
+                                            "LimitSecondsToForceLogOffUser": {
+                                                "type": "integer"
+                                            },
+                                            "LogAnalyticsPrimaryKey": {
+                                                "type": "string"
+                                            },
+                                            "LogAnalyticsWorkspaceId": {
+                                                "type": "string"
+                                            },
+                                            "LogOffMessageBody": {
+                                                "type": "string"
+                                            },
+                                            "LogOffMessageTitle": {
+                                                "type": "string"
+                                            },
+                                            "MaintenanceTagName": {
+                                                "type": "string"
+                                            },
+                                            "ResourceGroupName": {
+                                                "type": "string"
+                                            },
+                                            "SessionThresholdPerCPU": {
+                                                "type": "number"
+                                            },
+                                            "SubscriptionId": {
+                                                "type": "string"
+                                            },
+                                            "TimeDifference": {
+                                                "type": "string"
+                                            },
+                                            "UseARMAPI": {
+                                                "properties": {
+                                                    "IsPresent": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "required": [
+                                            "AADTenantId",
+                                            "SubscriptionId",
+                                            "ConnectionAssetName",
+                                            "HostPoolName",
+                                            "ResourceGroupName",
+                                            "LogAnalyticsPrimaryKey",
+                                            "LogAnalyticsWorkspaceId",
+                                            "LimitSecondsToForceLogOffUser",
+                                            "LogOffMessageBody",
+                                            "LogOffMessageTitle",
+                                            "MaintenanceTagName",
+                                            "SessionThresholdPerCPU",
+                                            "TimeDifference",
+                                            "UseARMAPI"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "Schedule": {
+                                    "items": {
+                                        "properties": {
+                                            "Day": {
+                                                "type": "string"
+                                            },
+                                            "MinimumHostsOffHours": {
+                                                "type": "integer"
+                                            },
+                                            "MinimumHostsPeakHours": {
+                                                "type": "integer"
+                                            },
+                                            "PeakEnd": {
+                                                "type": "string"
+                                            },
+                                            "PeakStart": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "Day",
+                                            "PeakStart",
+                                            "PeakEnd",
+                                            "MinimumHostsPeakHours",
+                                            "MinimumHostsOffHours"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "Timezone": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "runAfter": {
+                        "Configuration": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "ParseJson"
                 },
-                "triggers": {
-                    "Recurrence": {
-                        "recurrence": {
-                            "frequency": "Minute",
-                            "interval": 10
-                        },
-                        "type": "Recurrence"
-                    }
+                "Set_Current_Datetime": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "Today",
+                                "type": "string",
+                                "value": "@{convertFromUtc(utcNow(), body('Parse_Through_Configuration')?['Timezone'])}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Initiate_Config_Body": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
+                },
+                "Set_EndTime": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "EndTime",
+                                "type": "string",
+                                "value": "@{last(body('Get_Parameters_for_Current_Day_of_Week'))?['PeakEnd']}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Set_StartTime": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
+                },
+                "Set_End_Time_for_Today": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "EndDate",
+                                "type": "string",
+                                "value": "@{concat(formatDateTime(variables('Today'), 'yyyy-MM-dd'),' ',variables('EndTime'))}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Set_Start_Time_for_Today": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
+                },
+                "Set_StartTime": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StartTime",
+                                "type": "string",
+                                "value": "@{last(body('Get_Parameters_for_Current_Day_of_Week'))?['PeakStart']}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Get_Parameters_for_Current_Day_of_Week": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
+                },
+                "Set_Start_Time_for_Today": {
+                    "inputs": {
+                        "variables": [
+                            {
+                                "name": "StartDate",
+                                "type": "string",
+                                "value": "@{concat(formatDateTime(variables('Today'), 'yyyy-MM-dd'),' ',variables('StartTime'))}"
+                            }
+                        ]
+                    },
+                    "runAfter": {
+                        "Set_EndTime": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "InitializeVariable"
                 }
             },
-            "parameters": {}
-        }
+            "contentVersion": "1.0.0.0",
+            "outputs": {},
+            "parameters": {},
+            "staticResults": {
+                "HTTP0": {
+                    "outputs": {
+                        "headers": {},
+                        "statusCode": "OK"
+                    },
+                    "status": "Succeeded"
+                }
+            },
+            "triggers": {
+                "Recurrence": {
+                    "recurrence": {
+                        "frequency": "Minute",
+                        "interval": 10
+                    },
+                    "type": "Recurrence"
+                }
+            }
+        },
+        "parameters": {}
+    }
     ```
 1. Click on the **Logic app designer** link and expand the **Recurrence** step, set the time interval to match your needs. 
    
