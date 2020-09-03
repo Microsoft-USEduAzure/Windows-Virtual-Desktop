@@ -32,7 +32,7 @@ Before proceeding, we must first ensure the exisitng scaling tool has been deplo
 
 ## Prepare Logic App
 
-1. Navigate to the existing Logic App, click on **Logic App Designer**, expand the HTTP request and copy the contents of the URI field into a text editor. Next, the **all** of the contents of the HTTP request body into a different text editor window. 
+1. Navigate to the existing Logic App, click on **Logic App Designer**, expand the HTTP request and copy the contents of the URI field into a text editor. Next, copy and paste **all** of the contents of the HTTP request body into a different text editor window. 
 
     ![Copy Existing Logic App Settings](img/copy-existing-logicapps-config.png)
 
