@@ -53,7 +53,7 @@ Before proceeding, we must first ensure the exisitng scaling tool has been deplo
 
     ![Clear Existing Logic App Contents](img/clear-existing-logicapps-contents.png)
 
-1. Copy the contents below and paste them into the Logic App code view.
+1. Copy the contents below and paste them into the Logic App code view. Alternatively, you may download the JSON file here: [WVD Daily Scaling JSON](files/dailyscaling.json)
 
     ```json
         {
