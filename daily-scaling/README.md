@@ -5,7 +5,7 @@
 This tool expands on the existing Windows Virtual Desktop scaling tool by enabling the following functionality: 
 
 - Define peak and off hours based on the day of the week
-- Define minimum number of running session hosts for peak and off hours as well as the day of the week and 
+- Define minimum number of running session hosts for peak and off hours as well as the day of the week
 
 ## Prerequisites
 
